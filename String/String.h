@@ -1,5 +1,5 @@
 #pragma once
-#include <cstring>
+
 #include "Array.h"
 
 class String
@@ -12,5 +12,25 @@ public:
 	String(const String &that) :str(that.str), length(that.length){};
 	String(char* origin, int capacity);
 	String(String &that, int capacity);
+
+	int Length();
+	int Capacity();
+
+	operator char*();
+
+	String& operator =(const String &that);
+	String& operator =(char* string);
+	String& operator +=(char* string);
+	String& operator +=(const String &that);
+
+	bool operator >(const String &that);
+	bool operator >=(const String &that);
+	bool operator <(const String &that);
+	bool operator <=(const String &that);
+	bool operator ==(const String &that);
+	bool operator !=(const String &that);
+
+	String operator +(const String &that);
+
 };
 
