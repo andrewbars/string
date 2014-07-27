@@ -154,7 +154,7 @@ String String::operator+(const String &that)
 }
 
 
-bool String::Contains(const String &that, int startPos, int endPos)
+bool String::Contains(const String &that, int startPos, int endPos) const
 {
 	if (!endPos)
 		endPos = length;
@@ -172,12 +172,95 @@ bool String::Contains(const String &that, int startPos, int endPos)
 	return false;
 }
 
-bool String::StartsWith(const String &that)
+bool String::StartsWith(const String &that) const
 {
 	return Contains(that, 0, that.Length());
 }
 
-bool String::EndsWith(const String &that)
+bool String::EndsWith(const String &that) const
 {
 	return Contains(that, length - that.length);
+}
+
+int String::IndexOf(char c) const
+{
+	for (int i = 0; i < length; i++)
+	{
+		if (str[i] == c)
+			return i;
+	}
+	return -1;
+}
+
+int String::IndexOf(const String &str) const
+{
+	for (int i = 0; i <= length - str.length; i++)
+	{
+		if (Contains(str, i, i + str.length))
+			return i;
+	}
+	return -1;
+}
+
+int String::LastIndexOf(char c) const
+{
+	for (int i = length - 1; i >= 0; i--)
+	{
+		if (str[i] == c)
+			return i;
+	}
+	return -1;
+}
+
+int String::LastIndexOf(const String &that) const
+{
+	for (int i = length - that.length; i >= 0; i--)
+	{
+		if (Contains(that, i, i + that.length))
+			return i;
+	}
+	return -1;
+}
+
+int String::IndexOfAny(const String &that) const
+{
+	for (int i = 0; i < length; i++)
+	{
+		for (int j = 0; j < that.length; j++)
+		{
+			if (that.str[j] == str[i])
+				return i;
+		}
+	}
+	return -1;
+}
+
+String String::Take(int num)
+{
+	char *tmp = new char[num+1];
+	for (int i = 0; i < num; i++)
+		tmp[i] = str[i];
+	tmp[num] = '\0';
+	String newString = tmp;
+	return newString;
+}
+
+String String::Drop(int num)
+{
+	char *tmp = new char[length - num + 1];
+	for (int i = num; i < length; i++)
+		tmp[i-num] = str[i];
+	tmp[length - num] = '\0';
+	String newString = tmp;
+	return newString;
+}
+
+String String::DropRight(int num)
+{
+	return Take(length - num);
+}
+
+String String::TakeRight(int num)
+{
+	return Drop(length - num);
 }

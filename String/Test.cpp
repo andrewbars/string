@@ -6,6 +6,8 @@ void main()
 {
 	String s = "Test! It is a Test";
 	String s2 = "Test";
-	if (s.StartsWith(s2))
-		cout << "working!";
+	cout << s.LastIndexOf("Test");
+	String s3 = s.DropRight(13);
+	if (s3.StartsWith("Test!")&&s3.EndsWith("Test!"))
+		cout << "Working!!";
 }

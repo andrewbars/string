@@ -32,9 +32,19 @@ public:
 
 	String operator +(const String &that);
 
-	bool Contains(const String &that, int startPos=0, int endPos=0);
-	bool StartsWith(const String &that);
-	bool EndsWith(const String &that);
+	bool Contains(const String &that, int startPos=0, int endPos=0) const;
+	bool StartsWith(const String &that) const;
+	bool EndsWith(const String &that) const;
 
+	int IndexOf(char c) const;
+	int IndexOf(const String &that) const;
+	int LastIndexOf(char c) const;
+	int LastIndexOf(const String &that) const;
+	int IndexOfAny(const String &that) const;
+
+	String Take(int num);
+	String Drop(int num);
+	String TakeRight(int num);
+	String DropRight(int num);
 };
 
