@@ -1,9 +1,13 @@
 #pragma once
 
 #include "Array.h"
+#include <iostream>
+using namespace std;
 
 class String
 {
+	typedef bool(*Condition)(char);
+	
 	Array<char> str;
 	int length;
 public:
@@ -16,7 +20,7 @@ public:
 	int Length() const;
 	int Capacity();
 
-	operator char*();
+	operator char*() const;
 
 	String& operator =(const String &that);
 	String& operator =(char* string);
@@ -41,10 +45,27 @@ public:
 	int LastIndexOf(char c) const;
 	int LastIndexOf(const String &that) const;
 	int IndexOfAny(const String &that) const;
+	int IndexWhere(Condition f) const;
 
 	String Take(int num);
 	String Drop(int num);
 	String TakeRight(int num);
 	String DropRight(int num);
+	String TakeWhile(Condition f);
+	String DropWhile(Condition f);
+	String TakeRightWhile(Condition f);
+	String DropRightWhile(Condition f);
+
+	String& Remove(int from, int count);
+	String& Insert(const String &that, int pos);
+
+	String& PadLeft(int count, char c = ' ');
+	String& PadRight(int count, char c = ' ');
+
+	String& Replace(char from, char to);
+	String& Replace(String from, String to);
 };
+
+ostream& operator<<(ostream& os, const String &string);
+
 

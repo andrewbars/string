@@ -2,6 +2,7 @@
 #include <cstring>
 
 
+
 String::String(char *origin) :str(origin?strlen(origin):80)
 {
 	if (origin)
@@ -45,7 +46,7 @@ int String::Capacity()
 	return str.Length();
 }
 
-String::operator char*()
+String::operator char*() const
 {
 	char* string = new char[length + 1];
 	for (int i = 0; i < length; i++)
@@ -235,6 +236,16 @@ int String::IndexOfAny(const String &that) const
 	return -1;
 }
 
+int String::IndexWhere(Condition f) const
+{
+	for (int i = 0; i < length; i++)
+	{
+		if (f(str[i]))
+			return i;
+	}
+	return -1;
+}
+
 String String::Take(int num)
 {
 	char *tmp = new char[num+1];
@@ -263,4 +274,106 @@ String String::DropRight(int num)
 String String::TakeRight(int num)
 {
 	return Drop(length - num);
+}
+
+String String::TakeWhile(Condition f)
+{
+	int num = 0;
+	while (f(str[num++]));
+	return Take(--num);
+}
+
+String String::DropWhile(Condition f)
+{
+	int num = 0;
+	while (f(str[num++]));
+	return Drop(--num);
+}
+
+String String::TakeRightWhile(Condition f)
+{
+	int num = 0;
+	while (f(str[length-(num++)]));
+	return TakeRight(--num);
+}
+
+String String::DropRightWhile(Condition f)
+{
+	int num = 0;
+	while (f(str[length - (num++)]));
+	return DropRight(--num);
+}
+
+String& String::Remove(int from, int count)
+{
+	if (count > length - from)
+		count = length - from;
+	for (int i = from; i < length-count; i++)
+		str[i] = str[count + i];
+	length -= count;
+	return *this;
+}
+
+String& String::Insert(const String &string, int pos)
+{
+	if (str.Length() <= length + string.length)
+		str.Resize(length + string.length + 1);
+
+	for (int i = length + string.length; i >= pos+string.length; i--)
+		str[i] = str[i - string.length];
+	for (int i = pos; i < string.length + pos; i++)
+		str[i] = string.str[i - pos];
+	length += string.length;
+	return *this;
+}
+
+String& String::PadLeft(int count, char c)
+{
+	char* tmp = new char[count + 1];
+	for (int i = 0; i < count; i++)
+		tmp[i] = c;
+	tmp[count] = '\0';
+	Insert(tmp, 0);
+	return *this;
+}
+
+String& String::PadRight(int count, char c)
+{
+	char* tmp = new char[count + 1];
+	for (int i = 0; i < count; i++)
+		tmp[i] = c;
+	tmp[count] = '\0';
+	Insert(tmp, length);
+	return *this;
+}
+
+String& String::Replace(char from, char to)
+{
+	for (int i = 0; i < length; i++)
+	{
+		if (str[i] == from)
+			str[i] = to;
+	}
+	return *this;
+}
+
+String& String::Replace(String from, String to)
+{
+	int ind = IndexOf(from);
+	if (ind >= 0)
+	{
+		Remove(ind, from.length);
+		Insert(to, ind);
+		return(Replace(from, to));
+	}
+	else
+		return *this;
+}
+
+
+
+ostream& operator<<(ostream& os, const String &string)
+{
+	os << (char*)string;
+	return os;
 }
