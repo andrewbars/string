@@ -66,6 +66,11 @@ public:
 	String& Replace(String from, String to);
 
 	Array<String> Split(char sep);
+
+	String TrimEnd();
+	String TrimStart();
+	String Trim();
+	String Normalize();
 };
 
 ostream& operator<<(ostream& os, const String &string);

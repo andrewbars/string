@@ -1,9 +1,10 @@
 #include "String.h"
 #include <cstring>
+#include <cctype>
 
 
 
-String::String(char *origin) :str(origin?strlen(origin):80)
+String::String(char *origin) :str(origin?strlen(origin)+1:80)
 {
 	if (origin)
 	{
@@ -19,7 +20,7 @@ String::String(char* origin, int capacity) :str(capacity)
 {
 	if (origin)
 	{
-		length = (strlen(origin)+1) < capacity ? (strlen(origin)+1) : capacity;
+		length = (strlen(origin)+1) < capacity ? (strlen(origin)) : capacity;
 		for (int i = 0; i < length; i++)
 			str[i] = origin[i];
 	}
@@ -301,14 +302,14 @@ String String::DropWhile(Condition f)
 String String::TakeRightWhile(Condition f)
 {
 	int num = 0;
-	while (f(str[length-(num++)]));
+	while (f(str[length-(num++)-1]));
 	return TakeRight(--num);
 }
 
 String String::DropRightWhile(Condition f)
 {
 	int num = 0;
-	while (f(str[length - (num++)]));
+	while (f(str[length - (num++)-1]));
 	return DropRight(--num);
 }
 
@@ -400,7 +401,28 @@ Array<String> String::Split(char sep)
 	return strSplit;
 }
 
+String String::TrimStart()
+{
+	return DropWhile([](char c){return c == ' '; });
+}
 
+String String::TrimEnd()
+{
+	return DropRightWhile([](char c){return c == ' '; });
+}
+
+String String::Trim()
+{
+
+	return TrimEnd().TrimStart();
+}
+
+String String::Normalize()
+{
+	String tmp = Trim();
+	tmp.Replace("  ", " ");
+	return tmp;
+}
 
 ostream& operator<<(ostream& os, const String &string)
 {

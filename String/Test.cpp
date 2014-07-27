@@ -16,4 +16,8 @@ void main()
 	{
 		cout << splitStr[i] << endl;
 	}
+
+	String s4 = "   Normalization     test   ";
+	cout << s4 << '!'<<endl;
+	cout << s4.Normalize() << '!' << endl;
 }
