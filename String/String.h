@@ -40,7 +40,7 @@ public:
 	bool StartsWith(const String &that) const;
 	bool EndsWith(const String &that) const;
 
-	int IndexOf(char c) const;
+	int IndexOf(char c, int startPos = 0) const;
 	int IndexOf(const String &that) const;
 	int LastIndexOf(char c) const;
 	int LastIndexOf(const String &that) const;
@@ -64,6 +64,8 @@ public:
 
 	String& Replace(char from, char to);
 	String& Replace(String from, String to);
+
+	Array<String> Split(char sep);
 };
 
 ostream& operator<<(ostream& os, const String &string);

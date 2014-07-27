@@ -183,9 +183,9 @@ bool String::EndsWith(const String &that) const
 	return Contains(that, length - that.length);
 }
 
-int String::IndexOf(char c) const
+int String::IndexOf(char c, int startPos) const
 {
-	for (int i = 0; i < length; i++)
+	for (int i = startPos; i < length; i++)
 	{
 		if (str[i] == c)
 			return i;
@@ -248,6 +248,10 @@ int String::IndexWhere(Condition f) const
 
 String String::Take(int num)
 {
+	if (num>length)
+		num = length;
+	if (num == length)
+		return *this;
 	char *tmp = new char[num+1];
 	for (int i = 0; i < num; i++)
 		tmp[i] = str[i];
@@ -258,6 +262,10 @@ String String::Take(int num)
 
 String String::Drop(int num)
 {
+	if (!num)
+		return *this;
+	if (num > length)
+		num = length;
 	char *tmp = new char[length - num + 1];
 	for (int i = num; i < length; i++)
 		tmp[i-num] = str[i];
@@ -368,6 +376,28 @@ String& String::Replace(String from, String to)
 	}
 	else
 		return *this;
+}
+
+Array<String> String::Split(char sep)
+{
+	int count = 0;
+	for (int i = 0; i < length; i++)
+	{
+		if (str[i] == sep)
+			count++;
+	}
+	Array<String> strSplit(count + 1);
+	count = 0;
+	for (int i = 0; i <strSplit.Length(); i++)
+	{
+		int nextInd = IndexOf(sep, count)-count;
+		if (nextInd < 0)
+			nextInd = length-count;
+	
+		strSplit[i] = Drop(count).Take(nextInd);
+		count += nextInd+1;
+	}
+	return strSplit;
 }
 
 
