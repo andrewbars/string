@@ -8,12 +8,12 @@ class String
 	int length;
 public:
 	explicit String(int capacity = 80) : str(capacity > 10 ? capacity : 10), length(0) {};
-	explicit String(char* origin);
+	String(char* origin);
 	String(const String &that) :str(that.str), length(that.length){};
 	String(char* origin, int capacity);
 	String(String &that, int capacity);
 
-	int Length();
+	int Length() const;
 	int Capacity();
 
 	operator char*();
@@ -31,6 +31,10 @@ public:
 	bool operator !=(const String &that);
 
 	String operator +(const String &that);
+
+	bool Contains(const String &that, int startPos=0, int endPos=0);
+	bool StartsWith(const String &that);
+	bool EndsWith(const String &that);
 
 };
 

@@ -18,7 +18,7 @@ String::String(char* origin, int capacity) :str(capacity)
 {
 	if (origin)
 	{
-		length = strlen(origin) < capacity ? strlen(origin) : capacity;
+		length = (strlen(origin)+1) < capacity ? (strlen(origin)+1) : capacity;
 		for (int i = 0; i < length; i++)
 			str[i] = origin[i];
 	}
@@ -35,7 +35,7 @@ String::String(String &that, int capacity) :str(capacity)
 	}
 }
 
-int String::Length()
+int String::Length() const
 {
 	return length;
 }
@@ -52,7 +52,7 @@ String::operator char*()
 	{
 		string[i] = str[i];
 	}
-	string[length] = '/0';
+	string[length] = '\0';
 	return string;
 }
 
@@ -67,6 +67,7 @@ String& String::operator=(const String &that)
 	{
 		str[i] = that.str[i];
 	}
+	return *this;
 }
 
 String& String::operator=(char* string)
@@ -84,6 +85,7 @@ String& String::operator=(char* string)
 			str[i] = string[i];
 		}
 	}
+	return *this;
 }
 
 String& String::operator+=(const String &that)
@@ -110,8 +112,8 @@ String& String::operator+=(char* string)
 			str[i + length] = string[i];
 		}
 		length += stringLength;
-		return *this;
 	}
+	return *this;
 }
 
 bool String::operator>(const String &that)
@@ -129,7 +131,7 @@ bool String::operator<(const String &that)
 	return !(*this>that);
 }
 
-bool String::operator<(const String &that)
+bool String::operator<=(const String &that)
 {
 	return !(*this>=that);
 }
@@ -149,4 +151,33 @@ String String::operator+(const String &that)
 	String tmp(*this, length + that.length);
 	tmp += that;
 	return tmp;
+}
+
+
+bool String::Contains(const String &that, int startPos, int endPos)
+{
+	if (!endPos)
+		endPos = length;
+	for (int i = startPos; i <= endPos - that.Length(); i++)
+	{
+		if (str[i] == that.str[0])
+		{
+			int k = 0;
+			while (i + k < length&&k < that.length&&str[i + k] == that.str[k])
+				k++;
+			if (k == that.length)
+				return true;
+		}
+	}
+	return false;
+}
+
+bool String::StartsWith(const String &that)
+{
+	return Contains(that, 0, that.Length());
+}
+
+bool String::EndsWith(const String &that)
+{
+	return Contains(that, length - that.length);
 }

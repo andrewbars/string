@@ -39,6 +39,7 @@ public:
 	//Finds index of first element satisfying some conition.
 	int IndexWhere(Condition f);
 	T& operator[](int index);
+	const T& operator[](int index) const;
 	bool operator==(Array<T> that);
 	//Returns a new array, which contains all elements of the original array, which satisfy some condition
 	Array filter(Condition f);
@@ -281,6 +282,19 @@ int Array<T>::LastIndexOf(T item)
 
 template <typename T>
 T& Array<T>::operator[](int index)
+{
+	if (index > length - 1 || index<0)
+	{
+		throw "Index out of bonds!!!";
+	}
+	else
+	{
+		return *array[index];
+	}
+}
+
+template <typename T>
+const T& Array<T>::operator[](int index) const
 {
 	if (index > length - 1 || index<0)
 	{
