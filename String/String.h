@@ -14,6 +14,7 @@ public:
 	explicit String(int capacity = 80) : str(capacity > 10 ? capacity : 10), length(0) {};
 	String(char* origin);
 	String(const String &that) :str(that.str), length(that.length){};
+	String(String&& that) :str(move(that.str)), length(that.length){};
 	String(char* origin, int capacity);
 	String(String &that, int capacity);
 
@@ -23,6 +24,7 @@ public:
 	operator char*() const;
 
 	String& operator =(const String &that);
+	String& operator =(String &&that);
 	String& operator =(char* string);
 	String& operator +=(char* string);
 	String& operator +=(const String &that);

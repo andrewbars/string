@@ -11,6 +11,7 @@ public:
 	Array();
 	Array(int len);
 	Array(const Array<T> &that);
+	Array(Array<T> &&that);
 	~Array();
 	//Returns the length of the array
 	int Length();
@@ -40,7 +41,9 @@ public:
 	int IndexWhere(Condition f);
 	T& operator[](int index);
 	const T& operator[](int index) const;
-	bool operator==(Array<T> that);
+	bool operator==(const Array<T> &that);
+	Array& operator=(const Array<T> &that);
+	Array& operator=(Array<T> &&that);
 	//Returns a new array, which contains all elements of the original array, which satisfy some condition
 	Array filter(Condition f);
 	//Returns a new array, which contains all elements of the original array, which dont satisfy some condition
@@ -91,6 +94,14 @@ Array<T>::Array(const Array<T> &that)
 			*array[i] = *that.array[i];
 		}
 	}
+}
+
+template <typename T>
+Array<T>::Array(Array<T> &&that)
+{
+	length = that.length;
+	array = that.array;
+	that.array = nullptr;
 }
 
 template <typename T>
@@ -307,7 +318,7 @@ const T& Array<T>::operator[](int index) const
 }
 
 template <typename T>
-bool Array<T>::operator==(Array<T> that)
+bool Array<T>::operator==(const Array<T> &that)
 {
 	if (length != that.length)
 		return false;
@@ -320,6 +331,37 @@ bool Array<T>::operator==(Array<T> that)
 		}
 		return true;
 	}
+}
+
+template <typename T>
+Array<T>& Array<T>::operator=(const Array<T> &that)
+{
+	if (&that == this)
+		return *this;
+	for (int i = 0; i < length; i++)
+		delete array[i];
+	delete[]array;
+	length = that.length;
+	array = new T*[length];
+	for (int i = 0; i < length; i++)
+	{
+		array[i] = new T(*that.array[i]);
+	}
+	return *this;
+}
+
+template <typename T>
+Array<T>& Array<T>::operator=(Array<T> &&that)
+{
+	if (&that == this)
+		return *this;
+	for (int i = 0; i < length; i++)
+		delete array[i];
+	array = that.array;
+	that.array = nullptr;
+	length = that.length;
+	that.length = 0;
+	return *this;
 }
 template <typename T>
 Array<T> Array<T>::filter(Condition f)
@@ -340,6 +382,7 @@ Array<T> Array<T>::filter(Condition f)
 	}
 	return tmp;
 }
+
 template <typename T>
 Array<T> Array<T>::filterNot(Condition f)
 {

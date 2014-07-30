@@ -37,6 +37,8 @@ String::String(String &that, int capacity) :str(capacity)
 	}
 }
 
+
+
 int String::Length() const
 {
 	return length;
@@ -69,6 +71,15 @@ String& String::operator=(const String &that)
 	{
 		str[i] = that.str[i];
 	}
+	return *this;
+}
+
+String& String::operator=(String &&that)
+{
+	if (this == &that)
+		return *this;
+	length = that.length;
+	str = move(that.str);
 	return *this;
 }
 
