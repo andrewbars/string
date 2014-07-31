@@ -20,4 +20,19 @@ void main()
 	String s4 = "   Normalization     test   ";
 	cout << s4 << '!'<<endl;
 	cout << s4.Normalize() << '!' << endl;
+	cout << s4 + '?' << endl;
+	cout << '1' + s4 << endl;
+	cout << s4 << endl;
+	cout << "Really " + s + " " + s3 << endl;
+	cout << "Input string: \n";
+	cin >> s4;
+	cout << "You typed: " + s4 << endl;
+	String s5 = "625";
+	String s6 = "6.25";
+	int i = int(s5);
+	double d = double(s6);
+
+	cout << i/25 << '\n' << d*2 << '\n';
+
+	cout << s4.Concat(25.62356485);
 }

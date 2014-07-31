@@ -60,8 +60,20 @@ String::operator char*() const
 	return string;
 }
 
+String::operator int() const
+{
+	return atoi(*this);
+}
+
+String::operator double() const
+{
+	return strtod(*this, nullptr);
+}
+
 String& String::operator=(const String &that)
 {
+	if (&that == this)
+		return *this;
 	if (str.Length() < that.length)
 	{
 		str.Resize(that.length);
@@ -129,6 +141,11 @@ String& String::operator+=(char* string)
 	return *this;
 }
 
+String& String::operator+=(char c)
+{
+	return *this = *this + c;
+}
+
 bool String::operator>(const String &that)
 {
 	return strcmp((char*)this, (char*)((String)that))>0;
@@ -159,6 +176,21 @@ bool String::operator !=(const String &that)
 	return !(*this==that);
 }
 
+int String::CompareTo(String that)
+{
+	if (*this > that)
+		return 1;
+	else if (*this < that)
+		return -1;
+	else
+		return 0;
+}
+
+int String::CompareTo(char* that)
+{
+	return CompareTo(String(that));
+}
+
 String String::operator+(const String &that)
 {
 	String tmp(*this, length + that.length);
@@ -166,6 +198,96 @@ String String::operator+(const String &that)
 	return tmp;
 }
 
+String String::operator+(char* thatString)
+{
+	if (thatString&&strlen(thatString))
+	{
+		return *this + String(thatString);
+	}
+	else
+		return *this;
+}
+
+String String::operator+(char c)
+{
+	String tmp(*this, length + 1);
+	tmp.str[tmp.length] = c;
+	tmp.length++;
+	return tmp;
+}
+
+String& String::Concat(String that)
+{
+	return *this = *this + that;
+}
+
+String& String::Concat(char* that)
+{
+	return *this = *this + that;
+}
+
+String& String::Concat(int num)
+{
+	int count = 0;
+	int number = num;
+	do{
+		count++;
+		number /= 10;
+	} while (number);
+	char*tmp = new char[count];
+	sprintf(tmp, "%d", num);
+	return *this += tmp;
+}
+
+String& String::Concat(double num)
+{
+	int count = 0;
+	int number = int(num);
+	do{
+		count++;
+		number /= 10;
+	} while (number);
+	char*tmp = new char[count+15];
+	sprintf(tmp, "%.14f", num);
+	return *this += String(tmp).DropRightWhile([](char c){return c == '0'; });
+}
+
+String& String::Concat(String* stringArray, int count)
+{
+	for (int i = 0; i<count; i++)
+	{
+		*this += stringArray[i];
+	}
+	return *this;
+}
+
+String& String::Concat(Array<String> stringArray, int count)
+{
+	if (count>stringArray.Length())
+		count = stringArray.Length();
+	for (int i = 0; i<count; i++)
+	{
+		*this += stringArray[i];
+	}
+	return *this;
+}
+
+String& String::Concat(Array<String> stringArray)
+{
+	for (int i = 0; i<stringArray.Length(); i++)
+	{
+		*this += stringArray[i];
+	}
+	return *this;
+}
+
+char String::operator[](int index)
+{
+	if (index > 0 && index <= length)
+		return str[index];
+	else
+		throw "Index out of bonds!";
+}
 
 bool String::Contains(const String &that, int startPos, int endPos) const
 {
@@ -347,24 +469,24 @@ String& String::Insert(const String &string, int pos)
 	return *this;
 }
 
-String& String::PadLeft(int count, char c)
+String String::PadLeft(int count, char c)
 {
+	String newString = *this;
 	char* tmp = new char[count + 1];
 	for (int i = 0; i < count; i++)
 		tmp[i] = c;
 	tmp[count] = '\0';
-	Insert(tmp, 0);
-	return *this;
+	return newString.Insert(tmp, 0);
 }
 
-String& String::PadRight(int count, char c)
+String String::PadRight(int count, char c)
 {
 	char* tmp = new char[count + 1];
+	String newString = *this;
 	for (int i = 0; i < count; i++)
 		tmp[i] = c;
 	tmp[count] = '\0';
-	Insert(tmp, length);
-	return *this;
+	return newString.Insert(tmp, length);
 }
 
 String& String::Replace(char from, char to)
@@ -439,4 +561,21 @@ ostream& operator<<(ostream& os, const String &string)
 {
 	os << (char*)string;
 	return os;
+}
+istream& operator>>(istream& is, String &string)
+{
+	char* tmp = new char[string.Capacity()];
+	is.getline(tmp, string.Capacity());
+	string = tmp;
+	return is;
+}
+
+String operator+(char* str1, String str2)
+{
+	return String(str1) + str2;
+}
+
+String operator+(char c, String string)
+{
+	return string.PadLeft(1, c);
 }
