@@ -2,14 +2,16 @@
 
 #include "Array.h"
 #include <iostream>
+#include <functional>
 using namespace std;
 
 class String
 {
-	typedef bool(*Condition)(char);
-	
+	typedef function<bool(char)> Condition;
+	typedef function<bool(char, char)> Comparison;
 	Array<char> str;
 	int length;
+	void Sorting(int bot, int top, Comparison);
 public:
 	explicit String(int capacity = 80) : str(capacity > 10 ? capacity : 10), length(0) {};
 	String(char* origin);
@@ -39,8 +41,11 @@ public:
 	bool operator ==(const String &that);
 	bool operator !=(const String &that);
 
-	int CompareTo(String that);
-	int CompareTo(char* that);
+	int CompareTo(String that) const;
+	int CompareTo(char* that) const;
+	static int Compare(const String &str1, const String &str2);
+	static int Compare(const String &str1, char* str2);
+	static int Compare(char* str1, const String &str2);
 
 	String operator +(const String &that);
 	String operator +(char* that);
@@ -80,6 +85,7 @@ public:
 	String& Insert(const String &that, int pos);
 	String& Replace(char from, char to);
 	String& Replace(String from, String to);
+	String& Clear();
 
 	String PadLeft(int count, char c = ' ');
 	String PadRight(int count, char c = ' ');
@@ -90,6 +96,21 @@ public:
 	String TrimStart();
 	String Trim();
 	String Normalize();
+
+	template <typename T>
+	Array<T> Map(function<T(char)>);
+	String Map(function<char(char)>);
+
+	String ToLower();
+	String ToUpper();
+
+	void CopyTo(String &that);
+
+	String Reverse();
+	String Shuffle();
+	String SortBy(Comparison);
+	String SortAZ();
+	String SortZA();
 };
 
 ostream& operator<<(ostream& os, const String &string);

@@ -1,6 +1,7 @@
 #include "String.h"
 #include <cstring>
 #include <cctype>
+#include<locale>
 
 
 
@@ -176,7 +177,7 @@ bool String::operator !=(const String &that)
 	return !(*this==that);
 }
 
-int String::CompareTo(String that)
+int String::CompareTo(String that) const
 {
 	if (*this > that)
 		return 1;
@@ -186,9 +187,24 @@ int String::CompareTo(String that)
 		return 0;
 }
 
-int String::CompareTo(char* that)
+int String::CompareTo(char* that) const
 {
 	return CompareTo(String(that));
+}
+
+int String::Compare(const String &str1, const String &str2)
+{
+	return str1.CompareTo(str2);
+}
+
+int String::Compare(const String &str1, char* str2)
+{
+	return str1.CompareTo(str2);
+}
+
+int String::Compare(char* str1, const String &str2)
+{
+	return -str2.CompareTo(str1);
 }
 
 String String::operator+(const String &that)
@@ -446,6 +462,12 @@ String String::DropRightWhile(Condition f)
 	return DropRight(--num);
 }
 
+String& String::Clear()
+{
+	length = 0;
+	return *this;
+}
+
 String& String::Remove(int from, int count)
 {
 	if (count > length - from)
@@ -554,6 +576,104 @@ String String::Normalize()
 {
 	String tmp = Trim();
 	tmp.Replace("  ", " ");
+	return tmp;
+}
+
+String String::Map(function<char(char)> f)
+{
+	String tmp = *this;
+	for (int i = 0; i < tmp.length; i++)
+		tmp.str[i] = f(tmp.str[i]);
+	return tmp;
+}
+
+template <typename T>
+Array<T> String::Map(function<T(char)> f)
+{
+	Array<T> tmp(length);
+	return tmp.Map(f);
+}
+
+String String::ToUpper()
+{
+	return Map(toupper);
+}
+
+String String::ToLower()
+{
+	return Map(tolower);
+}
+
+void String::CopyTo(String& that)
+{
+	that = *this;
+}
+
+String String::Reverse()
+{
+	String newString = *this;
+	for (int i = 0; i < length / 2; i++)
+	{
+		char tmp = str[i];
+		newString.str[i] = newString.str[length - 1 - i];
+		newString.str[length - 1 - i] = tmp;
+	}
+	return newString;
+}
+
+void String::Sorting(int down, int up, Comparison comp)
+{
+	int i = down, j = up;
+	char m = str[(up + down) / 2];
+
+	while (i <= j)
+	{
+		while (!comp(str[i], m) && str[i] != m)
+			i++;
+		while (comp(str[j], m) && str[j] != m)
+			j--;
+
+		if (i <= j)
+		{
+			if (comp(str[i],str[j]))
+			{
+				char tmp = str[i];
+				str[i] = str[j];
+				str[j] = tmp;
+			}
+			i++; j--;
+		}
+	}
+	if (i < up)
+		Sorting(i, up, comp);
+	if (j>down)
+		Sorting(down, j, comp);
+}
+
+String String::SortAZ()
+{
+	String tmp = *this;
+	tmp.Sorting(0, tmp.length - 1, [](char c1, char c2){return c1 > c2; });
+	return tmp;
+}
+
+String String::SortZA()
+{
+	String tmp = *this;
+	tmp.Sorting(0, tmp.length - 1, [](char c1, char c2){return c1 < c2; });
+	return tmp;
+}
+
+String String::Shuffle()
+{
+	String tmp = *this;
+	for (int i = 0; i < tmp.length; i++)
+	{
+		int pick = rand() % tmp.length;
+		char c = tmp.str[i];
+		tmp.str[i] = tmp.str[pick];
+		tmp.str[pick] = c;
+	}
 	return tmp;
 }
 
